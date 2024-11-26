@@ -4,7 +4,7 @@ from umqttsimple import MQTTClient
 from hx711 import HX711
 from utime import sleep_us
 
-# ¶¨ÒåHX711Àà¼°º¯Êı
+# å®šä¹‰HX711ç±»åŠå‡½æ•°
 class Scales(HX711):
     def __init__(self, d_out, pd_sck):
         super(Scales, self).__init__(d_out, pd_sck)
@@ -35,13 +35,13 @@ class Scales(HX711):
             weights.append(sum([1 for current in values if abs(prev - current) / (prev / 100) <= deviation]))
         return sorted(zip(values, weights), key=lambda x: x[1]).pop()[0]
 
-# ESP32Á¬½ÓÎŞÏßÍø
+# ESP32è¿æ¥æ— çº¿ç½‘
 def do_connect():
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     if not wlan.isconnected():
         print('connecting to network...')
-        # WIFIÃû×ÖºÍÃÜÂë
+        # WIFIåå­—å’Œå¯†ç 
         wlan.connect('IoT-Lab_WiFi6_2.4G', 'CD449C0E36')
         i = 1
         while not wlan.isconnected():
@@ -50,7 +50,7 @@ def do_connect():
             time.sleep(1)
     print('network config:', wlan.ifconfig())
 
-# »Øµ÷º¯Êı£¬ÊÕµ½·şÎñÆ÷ÏûÏ¢ºó»áµ÷ÓÃÕâ¸öº¯Êı
+# å›è°ƒå‡½æ•°ï¼Œæ”¶åˆ°æœåŠ¡å™¨æ¶ˆæ¯åä¼šè°ƒç”¨è¿™ä¸ªå‡½æ•°
 def sub_cb(topic, msg): 
     if topic.decode("utf-8") == "weight":
         if msg.decode("utf-8") == "t1":
@@ -74,24 +74,24 @@ def sub_cb(topic, msg):
         print(topic, msg)
 
  
-# 1. ÁªÍø
+# 1. è”ç½‘
 do_connect()
 
-# 2. ´´½¨mqtt
-c = MQTTClient("ESP32", "192.168.0.102")    # ½¨Á¢Ò»¸öÃûÎªESP32µÄMQTT¿Í»§¶Ë£¬IPµØÖ·Îª·şÎñ¶ËIP
-                                            # Ê¹ÓÃEMQX±¾µØ²¿ÊğµÄ·şÎñÆ÷£¬Òò´ËÊ¹ÓÃ±¾»úip
-c.set_callback(sub_cb)  # ÉèÖÃ»Øµ÷º¯Êı
-c.connect()             # ½¨Á¢Á¬½Ó
-c.subscribe(b"weight")  # Ìí¼Ó¶©ÔÄ£¬¼à¿ØweightÕâ¸öÍ¨µÀ£¬½ÓÊÕ¿ØÖÆÃüÁî
+# 2. åˆ›å»ºmqtt
+c = MQTTClient("ESP32", "192.168.112.126")    # å»ºç«‹ä¸€ä¸ªåä¸ºESP32çš„MQTTå®¢æˆ·ç«¯ï¼ŒIPåœ°å€ä¸ºæœåŠ¡ç«¯IP
+                                            # ä½¿ç”¨EMQXæœ¬åœ°éƒ¨ç½²çš„æœåŠ¡å™¨ï¼Œå› æ­¤ä½¿ç”¨æœ¬æœºip
+c.set_callback(sub_cb)  # è®¾ç½®å›è°ƒå‡½æ•°
+c.connect()             # å»ºç«‹è¿æ¥
+c.subscribe(b"weight")  # æ·»åŠ è®¢é˜…ï¼Œç›‘æ§weightè¿™ä¸ªé€šé“ï¼Œæ¥æ”¶æ§åˆ¶å‘½ä»¤
 c.subscribe(b"etc")
 
-# 3. ³õÊ¼»¯²âÁ¿ÖØÁ¿ÉèÖÃ
+# 3. åˆå§‹åŒ–æµ‹é‡é‡é‡è®¾ç½®
 scales = Scales(d_out=22, pd_sck=23)
 scales.tare()
 A = 1013.5
 val = scales.stable_value()/A
 
-# 4. Ñ­»·³ÖĞø¼à¿Ø
+# 4. å¾ªç¯æŒç»­ç›‘æ§
 while True:
     c.check_msg()
     time.sleep(1)
