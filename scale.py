@@ -28,8 +28,8 @@ class Scales(HX711):
     def _stabilizer(values, deviation=10):
         weights = []
         for prev in values:
-            weights.append(sum([1 for current in values]))
-#             weights.append(sum([1 for current in values if abs(prev - current) / (prev / 100) <= deviation]))
+#            weights.append(sum([1 for current in values]))
+            weights.append(sum([1 for current in values if abs(prev - current) / (prev / 100) <= deviation]))
         return sorted(zip(values, weights), key=lambda x: x[1]).pop()[0]
     
 
