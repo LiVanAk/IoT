@@ -1,5 +1,22 @@
 from hx711 import HX711
 from utime import sleep_us
+import network
+import time
+from umqttsimple import MQTTClient
+
+# ESP32连接无线网
+def do_connect():
+    wlan = network.WLAN(network.STA_IF)
+    wlan.active(True)
+    if not wlan.isconnected():
+        print('connecting to network...')
+        wlan.connect('name', 'password')  # WIFI名字和密码
+        i = 1
+        while not wlan.isconnected():
+            print("connecting...{}".format(i))
+            i += 1
+            time.sleep(1)
+    print('Connection successful, network config:', wlan.ifconfig())
 
 
 class Scales(HX711):
