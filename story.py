@@ -61,7 +61,6 @@ def read_etc():
 def start_thread():
     global labels
     _thread.start_new_thread(read_etc, ())
-    # _thread.start_new_thread(getKey,())
 
 
 # 定义HX711类及函数
@@ -155,7 +154,7 @@ scales.tare()
 A = 1020
 val = scales.stable_value() / A
 led_pin = Pin(2, Pin.OUT)  # 通过GPIO口2控制ESP32板的LED灯
-
+control = Pin(34, Pin.IN, Pin.PULL_UP)
 # 3. 创建mqtt
 c = MQTTClient(
         client_id="ESP32",
