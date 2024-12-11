@@ -151,7 +151,7 @@ do_connect()
 mode = 0  # 默认执行模式为0：询问模式，1：主动发送模式
 scales = Scales(d_out=22, pd_sck=23)  # HX711称重数据传输接口
 scales.tare()
-A = 1020
+A = 1020.5
 val = scales.stable_value() / A
 led_pin = Pin(2, Pin.OUT)  # 通过GPIO口2控制ESP32板的LED灯
 control = Pin(34, Pin.IN, Pin.PULL_UP)
