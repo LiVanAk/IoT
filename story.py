@@ -118,11 +118,12 @@ def sub_cb(topic, msg):
     if topic.decode("utf-8") == "mode":
         if msg.decode("utf-8") == "0":
             mode = 0
-        else:
+            c.publish(topic, "Change Success")
+        elif msg.decode("utf-8") == "1":
             mode = 1
+            c.publish(topic, "Change Success")
         print(topic, msg, mode)
         led_pin.value(mode)
-        c.publish(topic, "Change Success")
     
     elif topic.decode("utf-8") == "weight":
         if msg.decode("utf-8") == "measure":
